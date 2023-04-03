@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>九宫格抽奖</title>
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .gird {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            grid-gap: 10px;
+            width: 300px;
+            height: 300px;
+        }
+
+        .gird>div {
+            background-size: cover;
+        }
+
+        .gird-0 {
+            background: url('./images/gird-0.png') no-repeat;
+        }
+
+        .gird-active-0 {
+            background: url('./images/gird-active-0.png') no-repeat;
+        }
+
+        .gird-1 {
+            background: url('./images/gird-1.png') no-repeat;
+        }
+
+        .gird-active-1 {
+            background: url('./images/gird-active-1.png') no-repeat;
+        }
+
+        .gird-2 {
+            background: url('./images/gird-2.png') no-repeat;
+        }
+
+        .gird-active-2 {
+            background: url('./images/gird-active-2.png') no-repeat;
+        }
+
+        .gird-3 {
+            background: url('./images/gird-3.png') no-repeat;
+        }
+
+        .gird-active-3 {
+            background: url('./images/gird-active-3.png') no-repeat;
+        }
+
+        .gird-4 {
+            background: url('./images/gird-4.png') no-repeat;
+        }
+
+        .gird-active-4 {
+            background: url('./images/gird-active-4.png') no-repeat;
+        }
+
+        .gird-5 {
+            background: url('./images/gird-5.png') no-repeat;
+        }
+
+        .gird-active-5 {
+            background: url('./images/gird-active-5.png') no-repeat;
+        }
+
+        .gird-6 {
+            background: url('./images/gird-6.png') no-repeat;
+        }
+
+        .gird-active-6 {
+            background: url('./images/gird-active-6.png') no-repeat;
+        }
+
+        .gird-7 {
+            background: url('./images/gird-7.png') no-repeat;
+        }
+
+        .gird-active-7 {
+            background: url('./images/gird-active-7.png') no-repeat;
+        }
+
+        .gird-8 {
+            background: url('./images/gird-8.png') no-repeat;
+        }
+
+        .gird-active-8 {
+            background: url('./images/gird-active-8.png') no-repeat;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="gird">
+        <div class="gird-0"></div>
+        <div class="gird-1"></div>
+        <div class="gird-2"></div>
+        <div class="gird-3"></div>
+        <div class="gird-4"></div>
+        <div class="gird-5"></div>
+        <div class="gird-6"></div>
+        <div class="gird-7"></div>
+        <div class="gird-8"></div>
+    </div>
+
+    <script>
+        const imgdata = [
+            { id: 1 },
+            { id: 2 },
+            { id: 3 },
+            { id: 4 },
+            { id: 5 },
+            { id: 6 },
+            { id: 7 },
+            { id: 8 },
+        ];
+        let current = -1;
+        // count 代表旋转的圈数，id, 表示 停止的id， cb 表示动画结束后执行的函数。
+        function start(count, id, cb) {
+            var sortArr = [1, 2, 3, 6, 9, 8, 7, 4]; // 旋转的顺序
+            var i = 0;
+            // 最大速度 150
+            var timeout = 200; // 走一格所花的时间，时间越大，速度越慢。
+            var that = this;
+            for (var m = 0; m < sortArr.length; m++) {
+                if (imgdata[sortArr[m] - 1].id == id) {
+                    break;
+                }
+            }
+            var middle = sortArr.length * count + m + 1;// 计算需要走多少格
+            function rotate() {
+                // 结束条件
+                if (i > sortArr.length * count && imgdata[current - 1].id == id) {
+                    clearInterval(that.time);
+                    that.time = null;
+                    cb();
+                    return;
+                }
+                document.querySelectorAll(".gird div").forEach((item, index) => {
+                    item.className = "gird-" + index;
+                });
+                // 控制加，减速度。
+                if (i < middle / count) {
+                    timeout = timeout - 160 / middle * count;
+                }
+
+                if (i > (count - 1) * middle / count) {
+                    timeout = timeout + 500 / middle * count;
+                }
+                if (i == middle - 2) {
+                    timeout = 600;
+                }
+                if (i == middle - 1) {
+                    timeout = 1000;
+                }
+                // 获取当前停留格子的数据，
+                current = sortArr[i++ % sortArr.length];
+                const dom = document.getElementsByClassName("gird-" + (current - 1))[0];
+                dom.className = "gird-active-" + (current - 1);
+                console.log(dom, current);
+                setTimeout(rotate, timeout);
+            }
+            this.time = setTimeout(rotate, timeout);
+        }
+
+        start(8, 1, () => {
+            console.log('结束了');
+            alert("恭喜你中奖了")
+        });
+    </script>
+</body>
+
+</html>
